@@ -1,14 +1,8 @@
-//
-//  WordCardsUITestsLaunchTests.swift
-//  WordCardsUITests
-//
-//  Created by Andy on 11/27/24.
-//
+// Copyright © 2024 Andrei (Andy) Iakovlev. See LICENSE file for details.
 
 import XCTest
 
 final class WordCardsUITestsLaunchTests: XCTestCase {
-
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }

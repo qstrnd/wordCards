@@ -1,14 +1,8 @@
-//
-//  WordCardsUITests.swift
-//  WordCardsUITests
-//
-//  Created by Andy on 11/27/24.
-//
+// Copyright © 2024 Andrei (Andy) Iakovlev. See LICENSE file for details.
 
 import XCTest
 
 final class WordCardsUITests: XCTestCase {
-
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
