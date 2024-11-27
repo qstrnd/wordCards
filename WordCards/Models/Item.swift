@@ -1,9 +1,4 @@
-//
-//  Item.swift
-//  WordCards
-//
-//  Created by Andy on 11/27/24.
-//
+// Copyright © 2024 Andrei (Andy) Iakovlev. See LICENSE file for details.
 
 import Foundation
 import SwiftData
@@ -11,7 +6,7 @@ import SwiftData
 @Model
 final class Item {
     var timestamp: Date
-    
+
     init(timestamp: Date) {
         self.timestamp = timestamp
     }

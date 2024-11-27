@@ -1,12 +1,7 @@
-//
-//  WordCardsApp.swift
-//  WordCards
-//
-//  Created by Andy on 11/27/24.
-//
+// Copyright © 2024 Andrei (Andy) Iakovlev. See LICENSE file for details.
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct WordCardsApp: App {
@@ -15,6 +10,9 @@ struct WordCardsApp: App {
             Item.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+
+        let myURL = "url"
+        print("myUrl: \(myURL)")
 
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
