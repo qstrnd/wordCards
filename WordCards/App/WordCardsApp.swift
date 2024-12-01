@@ -1,10 +1,16 @@
 // Copyright © 2024 Andrei (Andy) Iakovlev. See LICENSE file for details.
 
+import ComposableArchitecture
 import SwiftData
 import SwiftUI
 
 @main
 struct WordCardsApp: App {
+    static let store = Store(initialState: CounterFeature.State()) {
+        CounterFeature()
+            ._printChanges()
+    }
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -23,7 +29,17 @@ struct WordCardsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabView {
+                CounterView(store: Self.store)
+                    .tabItem {
+                        Label("Home", systemImage: "house.fill")
+                    }
+
+                ContentView()
+                    .tabItem {
+                        Label("SwiftData", systemImage: "swiftdata")
+                    }
+            }
         }
         .modelContainer(sharedModelContainer)
     }

@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A16EADDB2CFB72DB006F9A58 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = A16EADDA2CFB72DB006F9A58 /* ComposableArchitecture */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		A17C00082CF7B44F002D3B4F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -72,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A16EADDB2CFB72DB006F9A58 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,6 +154,7 @@
 			);
 			name = WordCards;
 			packageProductDependencies = (
+				A16EADDA2CFB72DB006F9A58 /* ComposableArchitecture */,
 			);
 			productName = WordCards;
 			productReference = A17CFFE92CF7B44E002D3B4F /* WordCards.app */;
@@ -209,6 +215,9 @@
 			);
 			mainGroup = A17CFFE02CF7B44E002D3B4F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A16EADD92CFB72DB006F9A58 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A17CFFEA2CF7B44E002D3B4F /* Products */;
 			projectDirPath = "";
@@ -248,6 +257,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		A17C002C2CF7BEEE002D3B4F /* Run Linting */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -262,7 +272,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftformat > /dev/null; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
+			shellScript = "# Exit if running for SwiftUI Previews\n\n# Checking target for previews as a workaround that currently works for Xcode 16\n# https://developer.apple.com/forums/thread/761439?\nif [ -n \"${XCODE_RUNNING_FOR_PREVIEWS}\" ] || [ \"${TARGET_DEVICE_IDENTIFIER}\" = \"1C5B5EEE-93F2-422F-9B6D-9844A84711A8\" ]; then\n  echo \"Skipping script because it's running for SwiftUI Previews.\"\n  exit 0;\nfi\n\nif [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftformat > /dev/null; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -648,6 +658,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A16EADD92CFB72DB006F9A58 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.16.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A16EADDA2CFB72DB006F9A58 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A16EADD92CFB72DB006F9A58 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A17CFFE12CF7B44E002D3B4F /* Project object */;
 }
