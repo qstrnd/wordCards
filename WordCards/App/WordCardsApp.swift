@@ -6,8 +6,8 @@ import SwiftUI
 
 @main
 struct WordCardsApp: App {
-    static let store = Store(initialState: CounterFeature.State()) {
-        CounterFeature()
+    static let store = Store(initialState: SelectorFeature.State()) {
+        SelectorFeature()
             ._printChanges()
     }
 
@@ -30,7 +30,7 @@ struct WordCardsApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                CounterView(store: Self.store)
+                SelectorView(store: Self.store)
                     .tabItem {
                         Label("Home", systemImage: "house.fill")
                     }
