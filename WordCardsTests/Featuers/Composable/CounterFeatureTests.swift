@@ -8,7 +8,7 @@ import Testing
 @MainActor
 struct CounterFeatureTests {
     @Test
-    func testIncrementDecrement() async {
+    func incrementDecrement() async {
         let store = TestStore(initialState: CounterFeature.State()) {
             CounterFeature()
         }
@@ -23,7 +23,7 @@ struct CounterFeatureTests {
     }
 
     @Test
-    func testTimer() async {
+    func timer() async {
         let clock = TestClock()
 
         let store = TestStore(initialState: CounterFeature.State()) {
@@ -47,7 +47,7 @@ struct CounterFeatureTests {
     }
 
     @Test
-    func testNumberFact() async {
+    func numberFact() async {
         let store = TestStore(initialState: CounterFeature.State()) {
             CounterFeature()
         } withDependencies: {
