@@ -8,6 +8,8 @@ struct AddCardFeature {
     @ObservableState
     struct State: Equatable {
         var input = ""
+        var inputLocale = ""
+        var outputLocale = ""
         var card = CardState.empty
         var errorNotification: String?
         var isLoadButtonEnabled = false

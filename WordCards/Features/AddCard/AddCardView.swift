@@ -12,11 +12,22 @@ struct AddCardView: View {
                 Section {
                     TextField("Input", text: $store.input.sending(\.setInput))
 
-                    Button("Load") {
-                        store.send(.loadButtonTapped)
+                    HStack {
+                        Button("Load") {
+                            store.send(.loadButtonTapped)
+                        }
+                        .disabled(!store.isLoadButtonEnabled)
+
+                        Spacer()
+
+                        Button("De") {}
+                            .buttonStyle(.bordered)
+
+                        Image(systemName: "arrow.right")
+
+                        Button("En") {}
+                            .buttonStyle(.bordered)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(!store.isLoadButtonEnabled)
                 }
 
                 Section {
