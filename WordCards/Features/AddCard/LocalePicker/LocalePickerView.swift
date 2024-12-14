@@ -15,7 +15,6 @@ struct LocalePickerFeature {
         var filteredLocales: [PresentableLocale] = []
         var searchText = ""
 
-        let selectionIdentifier: String
         var selectedLocaleID: String?
     }
 
@@ -30,7 +29,7 @@ struct LocalePickerFeature {
 
         @CasePathable
         enum Delegate: Equatable {
-            case select(localeID: String, selectionIdentifier: String)
+            case select(localeID: String)
         }
     }
 
@@ -66,16 +65,16 @@ struct LocalePickerFeature {
 
                 return .none
             case let .localeCellTapped(locale):
+                state.selectedLocaleID = locale.id
+                state.recentLocales.removeAll(where: { locale.id == $0.id })
                 state.recentLocales.insert(locale, at: 0)
                 state.recentLocales = Array(state.recentLocales.prefix(5))
-                state.selectedLocaleID = locale.id
 
-                return .run { [selectionIdentifier = state.selectionIdentifier] send in
+                return .run { send in
                     await send(
                         .delegate(
                             .select(
-                                localeID: locale.id,
-                                selectionIdentifier: selectionIdentifier
+                                localeID: locale.id
                             )
                         )
                     )
@@ -99,9 +98,9 @@ private extension URL {
 struct LocalePickerView: View {
     @Bindable var store: StoreOf<LocalePickerFeature>
     @State private var searchIsActive = false
-    
+
     var navigationTitle: String
-    
+
     var body: some View {
         List {
             if store.searchText.isEmpty {
@@ -168,7 +167,6 @@ struct LocalePickerView: View {
         LocalePickerView(
             store: Store(
                 initialState: LocalePickerFeature.State(
-                    selectionIdentifier: "",
                     selectedLocaleID: "HY"
                 )
             ) {
@@ -188,7 +186,6 @@ struct LocalePickerView: View {
                         PresentableLocale(id: "EN", name: "English"),
                         PresentableLocale(id: "DE", name: "German"),
                     ],
-                    selectionIdentifier: "",
                     selectedLocaleID: "EN"
                 )
             ) {

@@ -7,27 +7,36 @@ import SwiftUI
 struct AddCardFeature {
     @ObservableState
     struct State: Equatable {
-        var input = ""
-        var inputLocale = ""
-        var outputLocale = ""
-        var card = CardState.empty
-        var errorNotification: String?
-        var isLoadButtonEnabled = false
-
         @CasePathable
         enum CardState: Equatable {
             case empty
             case isLoading
             case loaded(Card)
         }
+
+        @Presents var destination: Destination.State?
+
+        var input = ""
+        var sourceLanguage = "DE"
+        var targetLanguage = "EN"
+        var card = CardState.empty
+        var errorNotification: String?
+        var isLoadButtonEnabled = false
     }
 
     enum Action {
         case setInput(String)
+
+        case selectSourceLanguageButtonTapped
+        case selectTargetLanguageButtonTapped
+
         case loadButtonTapped
         case cardLoaded(Card)
         case cardLoadingFailed(Error)
+
         case errorNotificationDismissed
+
+        case destination(PresentationAction<Destination.Action>)
     }
 
     enum CancelID {
@@ -46,6 +55,22 @@ struct AddCardFeature {
                 state.isLoadButtonEnabled = !input.isEmpty
 
                 return .cancel(id: CancelID.cardLoading)
+            case .selectSourceLanguageButtonTapped:
+                state.destination = .selectSourceLanguage(
+                    .init(
+                        selectedLocaleID: state.sourceLanguage
+                    )
+                )
+
+                return .none
+            case .selectTargetLanguageButtonTapped:
+                state.destination = .selectTargetLanguage(
+                    .init(
+                        selectedLocaleID: state.targetLanguage
+                    )
+                )
+
+                return .none
             case .loadButtonTapped:
                 state.card = .isLoading
                 state.isLoadButtonEnabled = false
@@ -76,7 +101,34 @@ struct AddCardFeature {
                 state.errorNotification = nil
 
                 return .none
+            case let .destination(.presented(.selectSourceLanguage(.delegate(.select(localeID: newSourceLanguageID))))):
+                if state.targetLanguage == newSourceLanguageID {
+                    state.targetLanguage = state.sourceLanguage
+                }
+                state.sourceLanguage = newSourceLanguageID
+
+                return .none
+            case let .destination(.presented(.selectTargetLanguage(.delegate(.select(localeID: newTargetLanguageID))))):
+                if state.sourceLanguage == newTargetLanguageID {
+                    state.sourceLanguage = state.targetLanguage
+                }
+                state.targetLanguage = newTargetLanguageID
+
+                return .none
+            case .destination:
+                return .none
             }
         }
+        .ifLet(\.$destination, action: \.destination)
     }
 }
+
+extension AddCardFeature {
+    @Reducer
+    enum Destination {
+        case selectSourceLanguage(LocalePickerFeature)
+        case selectTargetLanguage(LocalePickerFeature)
+    }
+}
+
+extension AddCardFeature.Destination.State: Equatable {}

@@ -7,26 +7,58 @@ struct AddCardView: View {
     @Bindable var store: StoreOf<AddCardFeature>
 
     var body: some View {
+        NavigationView {
+            addCardView
+        }
+        .sheet(
+            item: $store.scope(state: \.destination?.selectSourceLanguage, action: \.destination.selectSourceLanguage)
+        ) { store in
+            NavigationView {
+                LocalePickerView(
+                    store: store,
+                    navigationTitle: "Source Language"
+                )
+            }
+        }
+        .sheet(
+            item: $store.scope(state: \.destination?.selectTargetLanguage, action: \.destination.selectTargetLanguage)
+        ) { store in
+            NavigationView {
+                LocalePickerView(
+                    store: store,
+                    navigationTitle: "Target Language"
+                )
+            }
+        }
+    }
+
+    @ViewBuilder
+    var addCardView: some View {
         ZStack {
             Form {
                 Section {
                     TextField("Input", text: $store.input.sending(\.setInput))
 
                     HStack {
-                        Button("Load") {
+                        Button("Get Info") {
                             store.send(.loadButtonTapped)
                         }
                         .disabled(!store.isLoadButtonEnabled)
 
                         Spacer()
 
-                        Button("De") {}
-                            .buttonStyle(.bordered)
+                        Button(store.sourceLanguage) {
+                            store.send(.selectSourceLanguageButtonTapped)
+                        }
+                        .buttonStyle(.bordered)
 
                         Image(systemName: "arrow.right")
+                            .foregroundStyle(.quaternary)
 
-                        Button("En") {}
-                            .buttonStyle(.bordered)
+                        Button(store.targetLanguage) {
+                            store.send(.selectTargetLanguageButtonTapped)
+                        }
+                        .buttonStyle(.bordered)
                     }
                 }
 
