@@ -6,7 +6,7 @@ import SwiftUI
 // MARK: - Feature
 
 @Reducer
-struct LocalePickerFeature {
+struct LanguagePickerFeature {
     @ObservableState
     struct State: Equatable {
         @Shared(.fileStorage(.recentLocales)) var recentLocales: [PresentableLocale] = []
@@ -95,8 +95,8 @@ private extension URL {
 
 // MARK: - View
 
-struct LocalePickerView: View {
-    @Bindable var store: StoreOf<LocalePickerFeature>
+struct LanguagePickerView: View {
+    @Bindable var store: StoreOf<LanguagePickerFeature>
     @State private var searchIsActive = false
 
     var navigationTitle: String
@@ -164,13 +164,13 @@ struct LocalePickerView: View {
 
 #Preview("All Available") {
     NavigationView {
-        LocalePickerView(
+        LanguagePickerView(
             store: Store(
-                initialState: LocalePickerFeature.State(
+                initialState: LanguagePickerFeature.State(
                     selectedLocaleID: "HY"
                 )
             ) {
-                LocalePickerFeature()
+                LanguagePickerFeature()
             },
             navigationTitle: "Source Language"
         )
@@ -179,9 +179,9 @@ struct LocalePickerView: View {
 
 #Preview("All Available + Recent") {
     NavigationView {
-        LocalePickerView(
+        LanguagePickerView(
             store: Store(
-                initialState: LocalePickerFeature.State(
+                initialState: LanguagePickerFeature.State(
                     recentLocales: [
                         PresentableLocale(id: "EN", name: "English"),
                         PresentableLocale(id: "DE", name: "German"),
@@ -189,7 +189,7 @@ struct LocalePickerView: View {
                     selectedLocaleID: "EN"
                 )
             ) {
-                LocalePickerFeature()
+                LanguagePickerFeature()
             },
             navigationTitle: "Source Language"
         )

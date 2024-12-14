@@ -3,11 +3,11 @@
 import Dependencies
 import Foundation
 
-protocol NewCardFetching: Sendable {
+protocol NewEntryClientProtocol: Sendable {
     func getCard(for input: String, sourceLanguage: String, targetLanguage: String) async throws -> Card
 }
 
-struct NewCardFetcher: NewCardFetching {
+struct NewEntryClient: NewEntryClientProtocol {
     @Dependency(\.appEnvironment) var env
 
     func getCard(for input: String, sourceLanguage: String, targetLanguage: String) async throws -> Card {
@@ -45,7 +45,7 @@ struct NewCardFetcher: NewCardFetching {
 }
 
 #if DEBUG
-struct NewCardFetchingMock: NewCardFetching {
+struct NewCardFetchingMock: NewEntryClientProtocol {
     var getCard: @Sendable (String) async throws -> Card
 
     func getCard(for input: String, sourceLanguage _: String, targetLanguage _: String) async throws -> Card {
@@ -54,13 +54,13 @@ struct NewCardFetchingMock: NewCardFetching {
 }
 #endif
 
-private enum NewCardFetchingKey: DependencyKey {
-    static let liveValue: any NewCardFetching = NewCardFetcher()
+private enum NewEntryClientKey: DependencyKey {
+    static let liveValue: any NewEntryClientProtocol = NewEntryClient()
 }
 
 extension DependencyValues {
-    var newCardFetcher: NewCardFetching {
-        get { self[NewCardFetchingKey.self] }
-        set { self[NewCardFetchingKey.self] = newValue }
+    var newEntryClient: NewEntryClientProtocol {
+        get { self[NewEntryClientKey.self] }
+        set { self[NewEntryClientKey.self] = newValue }
     }
 }

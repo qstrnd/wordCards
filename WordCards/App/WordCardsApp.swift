@@ -7,9 +7,9 @@ import SwiftUI
 @main
 struct WordCardsApp: App {
     static let addCardStore = Store(
-        initialState: AddCardFeature.State()
+        initialState: NewEntryFeature.State()
     ) {
-        AddCardFeature()
+        NewEntryFeature()
     }
 
     static let selectorStore = Store(
@@ -42,7 +42,7 @@ struct WordCardsApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                AddCardView(store: Self.addCardStore)
+                NewEntryView(store: Self.addCardStore)
                     .tabItem {
                         Label("Card", systemImage: "menucard.fill")
                     }
