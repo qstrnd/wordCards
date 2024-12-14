@@ -33,7 +33,7 @@ struct AddCardFeature {
         case errorNotification
     }
 
-    @Dependency(\.addCardClient) var client
+    @Dependency(\.newCardFetcher) var client
     @Dependency(\.continuousClock) var clock
 
     var body: some ReducerOf<Self> {
@@ -50,7 +50,7 @@ struct AddCardFeature {
 
                 return .run { [input = state.input] send in
                     do {
-                        let card = try await client.fetch(input)
+                        let card = try await client.getCard(for: input)
                         await send(.cardLoaded(card))
                     } catch {
                         await send(.cardLoadingFailed(error))

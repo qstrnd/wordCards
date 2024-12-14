@@ -90,12 +90,11 @@ struct AddCardView: View {
                 AddCardFeature()
             },
             withDependencies: {
-                $0.addCardClient = .init(
-                    fetch: { _ in
-                        try await Task.sleep(for: .seconds(1))
+                $0.newCardFetcher = NewCardFetchingMock { _ in
+                    try await Task.sleep(for: .seconds(1))
 
-                        return .mock
-                    })
+                    return .mock
+                }
             }
         )
     )
@@ -109,12 +108,11 @@ struct AddCardView: View {
                 AddCardFeature()
             },
             withDependencies: {
-                $0.addCardClient = .init(
-                    fetch: { _ in
-                        try await Task.sleep(for: .seconds(1))
+                $0.newCardFetcher = NewCardFetchingMock { _ in
+                    try await Task.sleep(for: .seconds(1))
 
-                        throw NSError(domain: "com.example.app", code: 1, userInfo: [NSLocalizedDescriptionKey: "Something went wrong."])
-                    })
+                    throw NSError(domain: "com.example.app", code: 1, userInfo: [NSLocalizedDescriptionKey: "Something went wrong."])
+                }
             }
         )
     )

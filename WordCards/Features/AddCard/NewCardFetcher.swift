@@ -3,13 +3,15 @@
 import Dependencies
 import Foundation
 
-struct AddCardClient: Sendable {
-    var fetch: @Sendable (_ input: String) async throws -> Card
+protocol NewCardFetching: Sendable {
+    func getCard(for input: String) async throws -> Card
 }
 
-extension AddCardClient: DependencyKey {
-    static let liveValue = Self { input in
-        let url = URL(string: "http://localhost:8080/card")!
+struct NewCardFetcher: NewCardFetching {
+    @Dependency(\.appEnvironment) var env
+
+    func getCard(for input: String) async throws -> Card {
+        let url = env.apiBaseURL.appendingPathComponent("card")
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -42,9 +44,23 @@ extension AddCardClient: DependencyKey {
     }
 }
 
+#if DEBUG
+struct NewCardFetchingMock: NewCardFetching {
+    var getCard: @Sendable (String) async throws -> Card
+
+    func getCard(for input: String) async throws -> Card {
+        try await getCard(input)
+    }
+}
+#endif
+
+private enum NewCardFetchingKey: DependencyKey {
+    static let liveValue: any NewCardFetching = NewCardFetcher()
+}
+
 extension DependencyValues {
-    var addCardClient: AddCardClient {
-        get { self[AddCardClient.self] }
-        set { self[AddCardClient.self] = newValue }
+    var newCardFetcher: NewCardFetching {
+        get { self[NewCardFetchingKey.self] }
+        set { self[NewCardFetchingKey.self] = newValue }
     }
 }
