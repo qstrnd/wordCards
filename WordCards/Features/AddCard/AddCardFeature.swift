@@ -15,10 +15,10 @@ struct AddCardFeature {
         }
 
         @Presents var destination: Destination.State?
+        @Shared(.appStorage("addCardSourceLanguage")) var sourceLanguage = "DE"
+        @Shared(.appStorage("addCardTargetLanguage")) var targetLanguage = "EN"
 
         var input = ""
-        var sourceLanguage = "DE"
-        var targetLanguage = "EN"
         var card = CardState.empty
         var errorNotification: String?
         var isLoadButtonEnabled = false
@@ -42,6 +42,12 @@ struct AddCardFeature {
     enum CancelID {
         case cardLoading
         case errorNotification
+    }
+
+    @Reducer
+    enum Destination {
+        case selectSourceLanguage(LocalePickerFeature)
+        case selectTargetLanguage(LocalePickerFeature)
     }
 
     @Dependency(\.newCardFetcher) var client
@@ -120,14 +126,6 @@ struct AddCardFeature {
             }
         }
         .ifLet(\.$destination, action: \.destination)
-    }
-}
-
-extension AddCardFeature {
-    @Reducer
-    enum Destination {
-        case selectSourceLanguage(LocalePickerFeature)
-        case selectTargetLanguage(LocalePickerFeature)
     }
 }
 

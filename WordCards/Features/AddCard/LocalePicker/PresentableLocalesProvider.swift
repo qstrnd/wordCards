@@ -9,6 +9,7 @@ struct PresentableLocale: Equatable, Codable, Identifiable {
 }
 
 private extension PresentableLocale {
+    // TODO: Allow only explicitly supported set of locales
     static let live = Locale.availableIdentifiers
         .filter { identifier in
             !identifier.contains("_")
