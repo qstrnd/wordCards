@@ -19,17 +19,17 @@ struct Card: Equatable, Decodable {
 
 #if DEBUG
 
-    extension Card {
-        static let mock = Card(
-            definition: "Etwas sicher aufbewahren oder schützen, um es vor Schaden oder Verlust zu bewahren.",
-            definitionTranslation: "To keep something safe or protect it to prevent damage or loss.",
-            translation: "Preserve",
-            sentence: "Es ist wichtig, alte Dokumente gut zu **bewahren**.",
-            sentenceTranslation: "It is important to **preserve** old documents well.",
-            cerfLevel: "B1",
-            grammaticalFeatures: .init(partOfSpeech: "Verb"),
-            domain: "General"
-        )
-    }
+extension Card {
+    static let mock = Card(
+        definition: "Etwas sicher aufbewahren oder schützen, um es vor Schaden oder Verlust zu bewahren.",
+        definitionTranslation: "To keep something safe or protect it to prevent damage or loss.",
+        translation: "Preserve",
+        sentence: "Es ist wichtig, alte Dokumente gut zu **bewahren**.",
+        sentenceTranslation: "It is important to **preserve** old documents well.",
+        cerfLevel: "B1",
+        grammaticalFeatures: .init(partOfSpeech: "Verb"),
+        domain: "General"
+    )
+}
 
 #endif
