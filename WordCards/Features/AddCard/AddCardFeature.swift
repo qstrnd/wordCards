@@ -75,9 +75,9 @@ struct AddCardFeature {
                 state.card = .isLoading
                 state.isLoadButtonEnabled = false
 
-                return .run { [input = state.input] send in
+                return .run { [input = state.input, source = state.sourceLanguage, target = state.targetLanguage] send in
                     do {
-                        let card = try await client.getCard(for: input)
+                        let card = try await client.getCard(for: input, sourceLanguage: source, targetLanguage: target)
                         await send(.cardLoaded(card))
                     } catch {
                         await send(.cardLoadingFailed(error))

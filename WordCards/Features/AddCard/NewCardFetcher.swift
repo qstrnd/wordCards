@@ -4,13 +4,13 @@ import Dependencies
 import Foundation
 
 protocol NewCardFetching: Sendable {
-    func getCard(for input: String) async throws -> Card
+    func getCard(for input: String, sourceLanguage: String, targetLanguage: String) async throws -> Card
 }
 
 struct NewCardFetcher: NewCardFetching {
     @Dependency(\.appEnvironment) var env
 
-    func getCard(for input: String) async throws -> Card {
+    func getCard(for input: String, sourceLanguage: String, targetLanguage: String) async throws -> Card {
         let url = env.apiBaseURL.appendingPathComponent("card")
 
         var request = URLRequest(url: url)
@@ -21,7 +21,7 @@ struct NewCardFetcher: NewCardFetching {
             let sourceLanguage: String
             let destinationLanguage: String
         }
-        let body = Body(word: input, sourceLanguage: "de", destinationLanguage: "en")
+        let body = Body(word: input, sourceLanguage: sourceLanguage, destinationLanguage: targetLanguage)
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONEncoder().encode(body)
 
@@ -48,7 +48,7 @@ struct NewCardFetcher: NewCardFetching {
 struct NewCardFetchingMock: NewCardFetching {
     var getCard: @Sendable (String) async throws -> Card
 
-    func getCard(for input: String) async throws -> Card {
+    func getCard(for input: String, sourceLanguage _: String, targetLanguage _: String) async throws -> Card {
         try await getCard(input)
     }
 }
