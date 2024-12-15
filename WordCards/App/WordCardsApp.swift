@@ -6,6 +6,12 @@ import SwiftUI
 
 @main
 struct WordCardsApp: App {
+    static let addCardStore = Store(
+        initialState: NewEntryFeature.State()
+    ) {
+        NewEntryFeature()
+    }
+
     static let selectorStore = Store(
         initialState: SelectorFeature.State()
     ) {
@@ -26,9 +32,6 @@ struct WordCardsApp: App {
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
-        let myURL = "url"
-        print("myUrl: \(myURL)")
-
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
@@ -39,6 +42,11 @@ struct WordCardsApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
+                NewEntryView(store: Self.addCardStore)
+                    .tabItem {
+                        Label("Card", systemImage: "menucard.fill")
+                    }
+
                 SelectorView(store: Self.selectorStore)
                     .tabItem {
                         Label("Home", systemImage: "house.fill")

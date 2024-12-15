@@ -10,7 +10,7 @@
 --header "Copyright © {created.year} Andrei (Andy) Iakovlev. See LICENSE file for details." 
 --hexgrouping 4,8
 --hexliteralcase uppercase
---ifdef indent
+--ifdef no-indent
 --indent 4
 --indentcase false
 --importgrouping testable-bottom
