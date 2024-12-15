@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AllowedTypes</key>
+	<array>
+		<string>public.swift-source</string>
+	</array>
+	<key>DefaultCompletionName</key>
+	<string>SwiftTCAFeature</string>
+	<key>Description</key>
+	<string>A file representing a feature in Composable Architecture</string>
+	<key>Kind</key>
+	<string>Xcode.IDEKit.TextSubstitutionFileTemplateKind</string>
+	<key>MainTemplateFile</key>
+	<string>___FILEBASENAME___.swift</string>
+	<key>SortOrder</key>
+	<integer>1</integer>
+	<key>Template Author</key>
+	<string>Andrei (Andy) Iakovlev @ 2023</string>
+	<key>Options</key>
+	<array>
+		<dict>
+			<key>Description</key>
+			<string>Feature name</string>
+			<key>Default</key>
+			<string></string>
+			<key>Identifier</key>
+			<string>MODULENAME</string>
+			<key>Name</key>
+			<string>Feature name:</string>
+			<key>Required</key>
+			<string>YES</string>
+			<key>Type</key>
+			<string>text</string>
+		</dict>
+		<dict>
+			<key>Default</key>
+			<string>___VARIABLE_MODULENAME___</string>
+			<key>Identifier</key>
+			<string>productName</string>
+			<key>Type</key>
+			<string>static</string>
+		</dict>
+		<dict>
+			<key>SeparateView</key>
+			<string>Split view in a separate file</string>
+			<key>Default</key>
+			<string>false</string>
+			<key>Identifier</key>
+			<string>SeparateView</string>
+			<key>Name</key>
+			<string>Split view in a separate file</string>
+			<key>Required</key>
+			<string>YES</string>
+			<key>Type</key>
+			<string>checkbox</string>
+		</dict>
+	</array>
+</dict>
+</plist>
