@@ -34,3 +34,5 @@
 --enable propertyTypes
 
 --disable redundantSelf
+
+--exclude TCA\ Feature.xctemplate/**
