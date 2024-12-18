@@ -239,7 +239,7 @@ struct NewEntryView: View {
         store: Store(
             initialState: NewEntryFeature.State(
                 input: "Bewahren",
-                card: .loaded(.mock)
+                card: .loaded(.mock1)
             ),
             reducer: {}
         )
@@ -270,7 +270,7 @@ struct NewEntryView: View {
                 $0.newEntryClient = NewCardFetchingMock { _ in
                     try await Task.sleep(for: .seconds(1))
 
-                    return .mock
+                    return .mock1
                 }
             }
         )
