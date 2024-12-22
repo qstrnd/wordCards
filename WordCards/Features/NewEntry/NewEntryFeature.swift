@@ -14,6 +14,14 @@ struct NewEntryFeature {
             case empty
             case isLoading
             case loaded(Card)
+
+            var card: Card? {
+                switch self {
+                case .empty: nil
+                case .isLoading: nil
+                case let .loaded(card): card
+                }
+            }
         }
 
         @Presents var destination: Destination.State?
@@ -24,6 +32,11 @@ struct NewEntryFeature {
         var card = CardState.empty
         var errorNotification: String?
         var isLoadButtonEnabled = false
+
+        var isSaveButtonEnabled = false
+        var isSaveButttonVisible: Bool {
+            card.card != nil
+        }
     }
 
     enum Action {
@@ -35,6 +48,10 @@ struct NewEntryFeature {
         case loadButtonTapped
         case cardLoaded(Card)
         case cardLoadingFailed(Error)
+
+        case saveButtonTapped
+        case cardSavingFailed(Error)
+        case cardSaved
 
         case errorNotificationDismissed
 
@@ -52,11 +69,16 @@ struct NewEntryFeature {
         case selectTargetLanguage(LanguagePickerFeature)
     }
 
+    @Dependency(\.date) var date
+    @Dependency(\.uuid) var uuid
     @Dependency(\.newEntryClient) var client
     @Dependency(\.continuousClock) var clock
+    @Dependency(\.SaveEntryHandler) var SaveEntryHandler
 
     var body: some ReducerOf<Self> {
-        Reduce { state, action in
+        Reduce {
+            state,
+                action in
             switch action {
             case let .setInput(input):
                 state.input = input
@@ -93,6 +115,7 @@ struct NewEntryFeature {
                 }
                 .cancellable(id: CancelID.cardLoading, cancelInFlight: true)
             case let .cardLoaded(card):
+                state.isSaveButtonEnabled = true
                 state.card = .loaded(card)
 
                 return .none
@@ -105,6 +128,38 @@ struct NewEntryFeature {
                     try await clock.sleep(for: .seconds(5))
                 }
                 .cancellable(id: CancelID.errorNotification, cancelInFlight: true)
+            case let .cardSavingFailed(error):
+                state.errorNotification = error.localizedDescription
+
+                return .run { _ in
+                    try await clock.sleep(for: .seconds(5))
+                }
+                .cancellable(id: CancelID.errorNotification, cancelInFlight: true)
+            case .saveButtonTapped:
+                return .run { [card = state.card.card, input = state.input] send in
+                    guard let card else {
+                        // handle incorrect state
+                        assertionFailure("Cannot save card without a card being loaded")
+                        return
+                    }
+
+                    do {
+                        try await SaveEntryHandler.save(
+                            card: card,
+                            for: input,
+                            withID: uuid(),
+                            date: date()
+                        )
+
+                        await send(.cardSaved)
+                    } catch {
+                        await send(.cardSavingFailed(error))
+                    }
+                }
+            case .cardSaved:
+                state.isSaveButtonEnabled = false
+
+                return .none
             case .errorNotificationDismissed:
                 state.errorNotification = nil
 
@@ -219,6 +274,14 @@ struct NewEntryView: View {
                             .foregroundStyle(.secondary)
                         }
                     }
+                }
+
+                if store.isSaveButttonVisible {
+                    Button("Save") {
+                        store.send(.saveButtonTapped)
+                    }
+                    .disabled(!store.isSaveButtonEnabled)
+                    .frame(maxWidth: .greatestFiniteMagnitude)
                 }
             }
 

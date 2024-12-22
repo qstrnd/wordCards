@@ -20,7 +20,7 @@ struct EntryListItemRepository: EntryListItemRepositoryProtocol {
             ]
         )
 
-        let entries = try modelContainer.mainContext.fetch(fetchDescriptor, batchSize: 40)
+        let entries = try modelContainer.mainContext.fetch(fetchDescriptor)
 
         return entries.map {
             EntryListItem(id: $0.uuid, sourceText: $0.term, translation: $0.translation)

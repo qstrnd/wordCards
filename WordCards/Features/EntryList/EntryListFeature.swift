@@ -48,6 +48,9 @@ struct EntryListView: View {
             }
         }
         .scaleEffect(x: 1, y: -1, anchor: .center)
+        .onAppear {
+            store.send(.viewAppeared)
+        }
     }
 
     @ViewBuilder

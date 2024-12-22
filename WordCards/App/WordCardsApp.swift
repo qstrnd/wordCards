@@ -26,18 +26,12 @@ struct WordCardsApp: App {
             ._printChanges()
     }
 
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    static let entryListStore = Store(
+        initialState: EntryListFeature.State()
+    ) {
+        EntryListFeature()
+            ._printChanges()
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -57,12 +51,11 @@ struct WordCardsApp: App {
                         Label("Contacts", systemImage: "person.2.fill")
                     }
 
-                ContentView()
+                EntryListView(store: Self.entryListStore)
                     .tabItem {
                         Label("SwiftData", systemImage: "swiftdata")
                     }
             }
         }
-        .modelContainer(sharedModelContainer)
     }
 }
