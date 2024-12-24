@@ -41,13 +41,11 @@ struct EntryListView: View {
     @Bindable var store: StoreOf<EntryListFeature>
 
     var body: some View {
-        List {
+        Section("All Entries") {
             ForEach(store.entries, id: \.self) { entry in
                 entryListItem(for: entry)
-                    .scaleEffect(x: 1, y: -1, anchor: .center)
             }
         }
-        .scaleEffect(x: 1, y: -1, anchor: .center)
         .onAppear {
             store.send(.viewAppeared)
         }
@@ -66,20 +64,18 @@ struct EntryListView: View {
 // MARK: - Preview
 
 #Preview("Default") {
-    NavigationView {
+    List {
         EntryListView(
             store: Store(
                 initialState: EntryListFeature.State(
-                    entries: [Card.mock1, Card.mock2, Card.mock3].enumerated().map {
-                        EntryListItem(
-                            id: UUID($0.offset),
-                            sourceText: $0.element.input ?? "",
-                            translation: $0.element.translation
-                        )
-                    }
+                    entries: EntryListItem.mock
                 )
             ) {
                 EntryListFeature()
+            } withDependencies: {
+                $0.entryListItemRepository = EntryListItemRepositoryMock {
+                    EntryListItem.mock
+                }
             }
         )
     }
