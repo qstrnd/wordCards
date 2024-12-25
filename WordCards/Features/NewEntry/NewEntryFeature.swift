@@ -73,7 +73,7 @@ struct NewEntryFeature {
     @Dependency(\.uuid) var uuid
     @Dependency(\.newEntryClient) var client
     @Dependency(\.continuousClock) var clock
-    @Dependency(\.SaveEntryHandler) var SaveEntryHandler
+    @Dependency(\.saveEntryHandler) var saveEntryHandler
 
     var body: some ReducerOf<Self> {
         Reduce {
@@ -145,7 +145,7 @@ struct NewEntryFeature {
                     }
 
                     do {
-                        try await SaveEntryHandler.save(
+                        try await saveEntryHandler.save(
                             card: card,
                             for: input,
                             withID: uuid(),

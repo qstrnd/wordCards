@@ -39,7 +39,7 @@ private enum SaveEntryHandlerKey: DependencyKey {
 }
 
 extension DependencyValues {
-    var SaveEntryHandler: SaveEntryHandling {
+    var saveEntryHandler: SaveEntryHandling {
         get { self[SaveEntryHandlerKey.self] }
         set { self[SaveEntryHandlerKey.self] = newValue }
     }
