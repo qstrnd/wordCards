@@ -32,7 +32,7 @@ final class EntryListItemRepository: Sendable, EntryListItemRepositoryProtocol {
         }
 
         notificationCenter
-            .publisher(for: .didInsertNewStoredEntry)
+            .publisher(for: .didUpdateStoredEntries)
             .sink { [weak self] _ in
                 self?.updateStreamWithRecentEntryItems()
             }
@@ -41,7 +41,7 @@ final class EntryListItemRepository: Sendable, EntryListItemRepositoryProtocol {
         return stream
     }
 
-    func updateStreamWithRecentEntryItems() {
+    private func updateStreamWithRecentEntryItems() {
         let fetchDescriptor = FetchDescriptor<StoredEntry>(
             sortBy: [
                 SortDescriptor(\.creationDate, order: .reverse),

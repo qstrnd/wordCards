@@ -16,9 +16,12 @@ struct EntryListFeature {
         case viewAppeared
         case entriesLoaded([EntryListItem])
         case loadingFailed
+        case deleteEntryItemButtonTapped(itemID: UUID)
+        case deletionFailed
     }
 
     @Dependency(\.entryListItemRepository) var entryListItemRepository
+    @Dependency(\.deleteEntryHandler) var deleteEntryHandler
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -34,11 +37,21 @@ struct EntryListFeature {
                         await send(.loadingFailed)
                     }
                 }
+            case let .deleteEntryItemButtonTapped(itemID: id):
+                return .run { send in
+                    do {
+                        try await deleteEntryHandler.deleteEntry(id: id)
+                    } catch {
+                        await send(.deletionFailed)
+                    }
+                }
             case let .entriesLoaded(entries):
                 state.entries = entries
                 return .none
             case .loadingFailed:
                 // TODO: Show some kind of retry button
+                return .none
+            case .deletionFailed:
                 return .none
             }
         }
@@ -67,6 +80,13 @@ struct EntryListView: View {
             Text(entry.sourceText)
                 .bold()
             Text(entry.translation)
+        }
+        .swipeActions {
+            Button(role: .destructive) {
+                store.send(.deleteEntryItemButtonTapped(itemID: entry.id))
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
         }
     }
 }

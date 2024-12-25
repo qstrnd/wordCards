@@ -30,7 +30,7 @@ struct SaveEntryHandler: SaveEntryHandling {
 
         modelContainer.mainContext.insert(entry)
         try modelContainer.mainContext.save()
-        notificationCenter.post(name: .didInsertNewStoredEntry, object: nil)
+        notificationCenter.post(name: .didUpdateStoredEntries, object: nil)
     }
 }
 

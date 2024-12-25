@@ -5,7 +5,7 @@ import SwiftData
 
 @Model
 final class StoredEntry: Equatable {
-    var uuid: UUID
+    @Attribute(.unique) var uuid: UUID
     var term: String
     var context: String?
     var definition: String
@@ -57,5 +57,5 @@ final class StoredEntry: Equatable {
 }
 
 extension Notification.Name {
-    static let didInsertNewStoredEntry = Notification.Name("io.github.qstrnd.WordCards.didInsertNewStoredEntry")
+    static let didUpdateStoredEntries = Notification.Name("io.github.qstrnd.WordCards.didUpdateStoredEntries")
 }
