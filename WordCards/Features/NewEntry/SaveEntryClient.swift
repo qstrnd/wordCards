@@ -10,6 +10,7 @@ protocol SaveEntryHandling: Sendable {
 @MainActor
 struct SaveEntryHandler: SaveEntryHandling {
     @Dependency(\.modelContainer) var modelContainer
+    @Dependency(\.notificationCenter) var notificationCenter
 
     func save(card: Card, for input: String, withID id: UUID, date: Date) async throws {
         let entry = StoredEntry(
@@ -29,6 +30,7 @@ struct SaveEntryHandler: SaveEntryHandling {
 
         modelContainer.mainContext.insert(entry)
         try modelContainer.mainContext.save()
+        notificationCenter.post(name: .didInsertNewStoredEntry, object: nil)
     }
 }
 

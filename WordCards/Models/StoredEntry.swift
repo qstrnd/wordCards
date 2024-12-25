@@ -55,3 +55,7 @@ final class StoredEntry: Equatable {
         self.mostRecentUpdateDate = mostRecentUpdateDate
     }
 }
+
+extension Notification.Name {
+    static let didInsertNewStoredEntry = Notification.Name("io.github.qstrnd.WordCards.didInsertNewStoredEntry")
+}

@@ -15,6 +15,7 @@ struct EntryListFeature {
     enum Action {
         case viewAppeared
         case entriesLoaded([EntryListItem])
+        case loadingFailed
     }
 
     @Dependency(\.entryListItemRepository) var entryListItemRepository
@@ -24,11 +25,20 @@ struct EntryListFeature {
             switch action {
             case .viewAppeared:
                 return .run { send in
-                    let entries = try await entryListItemRepository.fetchEntryListItems()
-                    await send(.entriesLoaded(entries))
+                    do {
+                        let entriesStream = await entryListItemRepository.fetchEntryListItems()
+                        for try await entries in entriesStream {
+                            await send(.entriesLoaded(entries))
+                        }
+                    } catch {
+                        await send(.loadingFailed)
+                    }
                 }
             case let .entriesLoaded(entries):
                 state.entries = entries
+                return .none
+            case .loadingFailed:
+                // TODO: Show some kind of retry button
                 return .none
             }
         }

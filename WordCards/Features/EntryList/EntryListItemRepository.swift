@@ -1,39 +1,76 @@
 // Copyright © 2024 Andrei (Andy) Iakovlev. See LICENSE file for details.
 
+import Combine
 import Dependencies
 import Foundation
 import SwiftData
 
-@MainActor
+typealias EntryListStream = AsyncThrowingStream<[EntryListItem], Error>
+
 protocol EntryListItemRepositoryProtocol: Sendable {
-    func fetchEntryListItems() async throws -> [EntryListItem]
+    func fetchEntryListItems() async -> EntryListStream
 }
 
 @MainActor
-struct EntryListItemRepository: EntryListItemRepositoryProtocol {
+final class EntryListItemRepository: Sendable, EntryListItemRepositoryProtocol {
     @Dependency(\.modelContainer) var modelContainer
+    @Dependency(\.notificationCenter) var notificationCenter
 
-    func fetchEntryListItems() async throws -> [EntryListItem] {
+    private var cancellables = Set<AnyCancellable>()
+    var (stream, continuation) = EntryListStream.makeStream()
+
+    nonisolated init() {}
+
+    func fetchEntryListItems() -> EntryListStream {
+        defer {
+            updateStreamWithRecentEntryItems()
+        }
+
+        if !cancellables.isEmpty {
+            cancellables = []
+            (stream, continuation) = EntryListStream.makeStream()
+        }
+
+        notificationCenter
+            .publisher(for: .didInsertNewStoredEntry)
+            .sink { [weak self] _ in
+                self?.updateStreamWithRecentEntryItems()
+            }
+            .store(in: &cancellables)
+
+        return stream
+    }
+
+    func updateStreamWithRecentEntryItems() {
         let fetchDescriptor = FetchDescriptor<StoredEntry>(
             sortBy: [
                 SortDescriptor(\.creationDate, order: .reverse),
             ]
         )
 
-        let entries = try modelContainer.mainContext.fetch(fetchDescriptor)
+        do {
+            let entries = try modelContainer.mainContext.fetch(fetchDescriptor)
 
-        return entries.map {
-            EntryListItem(id: $0.uuid, sourceText: $0.term, translation: $0.translation)
+            let entryListItems = entries.map {
+                EntryListItem(id: $0.uuid, sourceText: $0.term, translation: $0.translation)
+            }
+
+            continuation.yield(with: .success(entryListItems))
+        } catch {
+            continuation.yield(with: .failure(error))
         }
     }
 }
 
 #if DEBUG
 struct EntryListItemRepositoryMock: EntryListItemRepositoryProtocol {
-    var fetchEntryListItems: @Sendable () async throws -> [EntryListItem]
+    var entryListItems: @Sendable () -> [EntryListItem]
 
-    func fetchEntryListItems() async throws -> [EntryListItem] {
-        try await fetchEntryListItems()
+    func fetchEntryListItems() -> EntryListStream {
+        AsyncThrowingStream { continuation in
+            continuation.yield(entryListItems())
+            continuation.finish()
+        }
     }
 }
 #endif

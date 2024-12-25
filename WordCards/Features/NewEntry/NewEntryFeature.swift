@@ -158,6 +158,8 @@ struct NewEntryFeature {
                 }
             case .cardSaved:
                 state.isSaveButtonEnabled = false
+                state.card = .empty
+                state.input = ""
 
                 return .none
             case .errorNotificationDismissed:
@@ -192,6 +194,7 @@ extension NewEntryFeature.Destination.State: Equatable {}
 
 struct NewEntryView: View {
     @Bindable var store: StoreOf<NewEntryFeature>
+    @FocusState var isInputFieldFocused: Bool
 
     var body: some View {
         newEntryView
@@ -221,9 +224,11 @@ struct NewEntryView: View {
     var newEntryView: some View {
         Section {
             TextField("Input", text: $store.input.sending(\.setInput))
+                .focused($isInputFieldFocused)
 
             HStack {
                 Button("Get Info") {
+                    isInputFieldFocused = false
                     store.send(.loadButtonTapped)
                 }
                 .disabled(!store.isLoadButtonEnabled)
