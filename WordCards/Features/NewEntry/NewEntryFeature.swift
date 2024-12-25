@@ -82,7 +82,7 @@ struct NewEntryFeature {
             switch action {
             case let .setInput(input):
                 state.input = input
-                state.isLoadButtonEnabled = !input.isEmpty
+                state.isLoadButtonEnabled = !input.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
 
                 return .cancel(id: CancelID.cardLoading)
             case .selectSourceLanguageButtonTapped:
@@ -115,6 +115,7 @@ struct NewEntryFeature {
                 }
                 .cancellable(id: CancelID.cardLoading, cancelInFlight: true)
             case let .cardLoaded(card):
+                state.isLoadButtonEnabled = false
                 state.isSaveButtonEnabled = true
                 state.card = .loaded(card)
 
