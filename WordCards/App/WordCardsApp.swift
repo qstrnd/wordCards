@@ -6,10 +6,10 @@ import SwiftUI
 
 @main
 struct WordCardsApp: App {
-    static let addCardStore = Store(
-        initialState: NewEntryFeature.State()
+    static let homeStore = Store(
+        initialState: HomeFeature.State()
     ) {
-        NewEntryFeature()
+        HomeFeature()
     }
 
     static let selectorStore = Store(
@@ -26,23 +26,17 @@ struct WordCardsApp: App {
             ._printChanges()
     }
 
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    static let entryListStore = Store(
+        initialState: EntryListFeature.State()
+    ) {
+        EntryListFeature()
+            ._printChanges()
+    }
 
     var body: some Scene {
         WindowGroup {
             TabView {
-                NewEntryView(store: Self.addCardStore)
+                HomeView(store: Self.homeStore)
                     .tabItem {
                         Label("Card", systemImage: "menucard.fill")
                     }
@@ -56,13 +50,7 @@ struct WordCardsApp: App {
                     .tabItem {
                         Label("Contacts", systemImage: "person.2.fill")
                     }
-
-                ContentView()
-                    .tabItem {
-                        Label("SwiftData", systemImage: "swiftdata")
-                    }
             }
         }
-        .modelContainer(sharedModelContainer)
     }
 }
