@@ -15,6 +15,7 @@ final class StoredEntry: Equatable {
     var sentenceTranslation: String
     var cerfLevel: String
     var domain: String
+    var partOfSpeech: String
     var sourceType: SourceType
     var creationDate: Date
     var mostRecentUpdateDate: Date
@@ -35,6 +36,7 @@ final class StoredEntry: Equatable {
         sentence: String,
         sentenceTranslation: String,
         cerfLevel: String,
+        partOfSpeech: String,
         domain: String,
         sourceType: SourceType,
         creationDate: Date,
@@ -49,6 +51,7 @@ final class StoredEntry: Equatable {
         self.sentence = sentence
         self.sentenceTranslation = sentenceTranslation
         self.cerfLevel = cerfLevel
+        self.partOfSpeech = partOfSpeech
         self.domain = domain
         self.sourceType = sourceType
         self.creationDate = creationDate

@@ -66,7 +66,9 @@ struct EntryListView: View {
     var body: some View {
         Section("All Entries") {
             ForEach(store.entries, id: \.self) { entry in
-                entryListItem(for: entry)
+                NavigationLink(state: CardDetailFeature.State(cardID: entry.id)) {
+                    entryListItem(for: entry)
+                }
             }
         }
         .onAppear {
