@@ -9,6 +9,7 @@ import SwiftUI
 struct HomeFeature {
     @ObservableState
     struct State: Equatable {
+        var path = StackState<CardDetailFeature.State>()
         var newEntry = NewEntryFeature.State()
         var entryList = EntryListFeature.State()
     }
@@ -16,6 +17,7 @@ struct HomeFeature {
     enum Action {
         case newEntry(NewEntryFeature.Action)
         case entryList(EntryListFeature.Action)
+        case path(StackAction<CardDetailFeature.State, CardDetailFeature.Action>)
     }
 
     var body: some ReducerOf<Self> {
@@ -31,13 +33,11 @@ struct HomeFeature {
         ) {
             EntryListFeature()
         }
-        Reduce { _, action in
-            switch action {
-            case .newEntry:
-                .none
-            case .entryList:
-                .none
-            }
+        Reduce { _, _ in
+            .none
+        }
+        .forEach(\.path, action: \.path) {
+            CardDetailFeature()
         }
     }
 }
@@ -48,14 +48,18 @@ struct HomeView: View {
     @Bindable var store: StoreOf<HomeFeature>
 
     var body: some View {
-        List {
-            NewEntryView(
-                store: store.scope(state: \.newEntry, action: \.newEntry)
-            )
+        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
+            List {
+                NewEntryView(
+                    store: store.scope(state: \.newEntry, action: \.newEntry)
+                )
 
-            EntryListView(
-                store: store.scope(state: \.entryList, action: \.entryList)
-            )
+                EntryListView(
+                    store: store.scope(state: \.entryList, action: \.entryList)
+                )
+            }
+        } destination: { store in
+            CardDetailView(store: store)
         }
     }
 }

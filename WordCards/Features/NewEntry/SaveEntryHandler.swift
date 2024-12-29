@@ -22,6 +22,7 @@ struct SaveEntryHandler: SaveEntryHandling {
             sentence: card.sentence,
             sentenceTranslation: card.sentenceTranslation,
             cerfLevel: card.cerfLevel,
+            partOfSpeech: card.grammaticalFeatures.partOfSpeech,
             domain: card.domain,
             sourceType: .aiGenerated,
             creationDate: date,
